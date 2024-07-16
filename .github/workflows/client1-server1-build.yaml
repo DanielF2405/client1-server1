@@ -32,7 +32,7 @@ jobs:
           DATABASE_URL: postgresql://postgres.qqjeooqbvvuwltqzbhwi:Dannyf122405*@aws-0-eu-west-2.pooler.supabase.com:5432/postgres
         run: |
           source services/c1_env/bin/activate
-          pip install -r requirements.txt
+          pip install -r services/requirements.txt
           python services/api.py
 
 # Please do not touch the following action
