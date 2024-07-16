@@ -1,0 +1,49 @@
+# To better understand this file read this:
+# https://docs.ionos.space/docs/github-actions-customization/
+
+name: "Deploy Now: Execute Build"
+
+on:
+  workflow_call:
+    inputs:
+      site-url:
+        required: true
+        type: string
+      branch-id:
+        required: true
+        type: string
+
+env:
+  DEPLOYMENT_FOLDER: ./servers
+
+jobs:
+# Please do not rename this job
+  build-project:
+    name: build client1-server1
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+
+      - name: Run script
+        env:
+          DATABASE_URL: postgresql://postgres.qqjeooqbvvuwltqzbhwi:Dannyf122405*@aws-0-eu-west-2.pooler.supabase.com:5432/postgres
+        run: |
+          source services/c1_env/bin/activate
+          pip install -r requirements.txt
+          python services/api.py
+
+# Please do not touch the following action
+      - name: Store deployment content
+        uses: ionos-deploy-now/artifact-action@v1
+        with:
+          api-key: ${{ secrets.IONOS_API_KEY }}
+          service-host: api-eu.ionos.space
+          project-id: ddc3e460-f697-466e-bc51-1b76dc11e6c5
+          branch-id: ${{ inputs.branch-id }}
+          version: ${{ github.sha }}
+          folder: ${{ env.DEPLOYMENT_FOLDER }}
+          config-file: .deploy-now/client1-server1/config.yaml
+          action: upload
